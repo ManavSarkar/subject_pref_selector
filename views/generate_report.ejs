@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <%- include("partials/headers"); %>
+</head>
+
+<body>
+  <%- include("partials/navbar"); %>
+
+
+  <!-- select option with list of departments -->
+  <div class="mb-4 max-w-lg mx-auto mt-16">
+    <label for="department" class="block font-medium">Department</label>
+    <select id="department" name="department" class="mt-1 p-2 border w-full rounded" required>
+      <option value="" disabled selected>Select department</option>
+
+      <!-- Add more departments as needed -->
+    </select>
+
+
+  </div>
+  <!-- button -->
+  <div class="flex justify-center">
+    <button id="generate-report" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+      Generate Report
+    </button>
+  </div>
+
+  <!-- table of students with there elective subject, roll no and cgpa -->
+  <div class="flex justify-center mt-8">
+    <table id="report-table" class="table-auto border-collapse border border-blue-800">
+      <thead>
+        <tr>
+          <th class="border border-blue-600 px-4 py-2">Roll No</th>
+          <th class="border border-blue-600 px-4 py-2">Name</th>
+          <th class="border border-blue-600 px-4 py-2">Elective Subject</th>
+          <th class="border border-blue-600 px-4 py-2">CGPA</th>
+        </tr>
+      </thead>
+      <tbody id="report-table-body">
+
+
+      </tbody>
+    </table>
+
+
+    <script src="js/insert_departments.js"></script>
+    <script src="js/generate_report.js"></script>
+</body>
+
+</html>

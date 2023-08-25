@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <%- include("partials/headers"); %>
+</head>
+
+<body>
+  <%- include("partials/navbar"); %>
+
+  <!-- form with -->
+  <div class="max-w-md mx-auto mt-10 bg-white p-6 rounded shadow-md">
+    <h1 class="text-2xl font-semibold mb-4">Student Information</h1>
+    <form id="formStudent">
+
+      <div class="mb-4">
+        <label for="name" class="block font-medium">Student Name</label>
+        <input type="text" id="name" name="name" class="mt-1 p-2 border w-full rounded" required>
+      </div>
+      <div class="mb-4">
+        <label for="id" class="block font-medium">Student ID</label>
+        <input type="text" id="id" name="id" class="mt-1 p-2 border w-full rounded" oninput="convertToUppercase(this)" required>
+      </div>
+      <div class="mb-4">
+        <label for="cgpa" class="block font-medium">CGPA</label>
+        <input type="number" step="0.01" id="cgpa" name="cgpa" class="mt-1 p-2 border w-full rounded" required>
+      </div>
+      <div class="mb-4">
+        <label for="department" class="block font-medium">Department</label>
+        <select id="department" name="department" class="mt-1 p-2 border w-full rounded" onchange="handleDepartmentChange()" required>
+          <option value="" disabled selected>Select department</option>
+
+          <!-- Add more departments as needed -->
+        </select>
+      </div>
+      <div class="mb-4">
+        <label class="block font-medium">Preference of Elective Subjects</label>
+        <% for (let i = 0; i < 3; i++) { %>
+        <div class="mt-2">
+          <label for="preference<%= i %>" class="block font-medium">Preference <%= i + 1 %></label>
+          <select required id="preference<%= i %>" name="preference<%= i %>" class="mt-1 p-2 border w-full rounded" onchange="handlePreferenceChange(this, <%= i %>)">
+            <option value="" disabled selected>Select your preference</option>
+          </select>
+        </div>
+        <% } %>
+      </div>
+      <!-- reset button -->
+      <button type="button" class="bg-gray-500 text-white py-2 px-4 rounded hover:bg-gray-600" onclick="resetSelect()">Reset</button>
+      <button type="submit" class="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600">Submit</button>
+    </form>
+  </div>
+  <script src="./js/add_student.js"></script>
+  <script src="./js/database.js"></script>
+  <script>
+    document.getElementById('formStudent').addEventListener('submit', handleSubmit); // Handle form submit event
+
+    for (const department of departments) {
+      const option = document.createElement('option');
+      option.value = department;
+      option.textContent = department;
+      departmentSelect.appendChild(option);
+    }
+
+    function handlePreferenceChange(selectElement, preferenceIndex) {
+      const selectedValue = selectElement.value;
+
+      // Check for duplicate selections in previous preferences
+      for (let i = 0; i < 3; i++) {
+        if (i === preferenceIndex) continue; // Skip current preference
+        const prevSelect = document.getElementById(`preference${i}`);
+        if (prevSelect.value === selectedValue && selectedValue !== "") {
+          alert(`Subject '${selectedValue}' is already selected as Preference ${i + 1}.`);
+          selectElement.value = "";
+          return;
+        }
+      }
+    }
+
+    function handleDepartmentChange() {
+      const departmentSelect = document.getElementById('department');
+      const selectedDepartment = departmentSelect.value;
+
+      for (let i = 0; i < 3; i++) {
+        const preferenceSelect = document.getElementById(`preference${i}`);
+        preferenceSelect.innerHTML = ''; // Clear previous options 
+        const option = document.createElement('option');
+        option.value = "";
+        option.textContent = "Select your preference";
+        option.disabled = true;
+        preferenceSelect.appendChild(option);
+        preferenceSelect.value = "";
+        const subjects = subjectsByDepartment.get(selectedDepartment);
+        if (!subjects) continue; // Skip if no subjects are found for the selected department
+        for (const subject of subjects) {
+          const option = document.createElement('option');
+          option.value = subject;
+          option.textContent = subject;
+          preferenceSelect.appendChild(option);
+        }
+      }
+    }
+
+    function convertToUppercase(inputElement) {
+      inputElement.value = inputElement.value.toUpperCase();
+    }
+
+    function resetSelect() {
+      document.getElementById('department').selectedIndex = 0; // Reset the select element to default state
+      for (let i = 0; i < 3; i++) {
+        const preferenceSelect = document.getElementById(`preference${i}`);
+        preferenceSelect.selectedIndex = 0; // Reset the select element to default state
+      }
+    }
+  </script>
+</body>
+
+</html>
